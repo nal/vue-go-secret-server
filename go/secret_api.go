@@ -10,12 +10,11 @@
 package swagger
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
+	http.ServeFile(w, r, "./templates/index.html")
 }
 
 func AddSecret(w http.ResponseWriter, r *http.Request) {

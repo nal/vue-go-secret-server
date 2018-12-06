@@ -13,7 +13,7 @@ import (
 	"log"
 	"net/http"
 
-	sw "codersrank.io/vue_go_secret_server/go"
+	sw "codersrank.io/vue-go-secret-server/go"
 )
 
 func main() {
