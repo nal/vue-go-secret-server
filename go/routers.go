@@ -16,6 +16,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Route struct to populate routes
 type Route struct {
 	Name        string
 	Method      string
@@ -24,23 +25,6 @@ type Route struct {
 }
 
 type Routes []Route
-
-func NewRouter() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range routes {
-		var handler http.Handler
-		handler = route.HandlerFunc
-		handler = Logger(handler, route.Name)
-
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(handler)
-	}
-
-	return router
-}
 
 var routes = Routes{
 	Route{
@@ -63,4 +47,23 @@ var routes = Routes{
 		"/v1/secret/{hash}",
 		GetSecretByHash,
 	},
+}
+
+func NewRouter() *mux.Router {
+	router := mux.NewRouter().StrictSlash(true)
+	for _, route := range routes {
+		var handler http.Handler
+		handler = route.HandlerFunc
+		handler = Logger(handler, route.Name)
+
+		router.
+			Methods(route.Method).
+			Path(route.Pattern).
+			Name(route.Name).
+			Handler(handler)
+	}
+
+	router.PathPrefix("/assets/").Methods("GET").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
+
+	return router
 }
