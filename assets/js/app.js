@@ -25,9 +25,15 @@ const app = new Vue({
         },
         sendRequest: function () {
             const secretForm = this;
-            axios.post(secretForm.serverApiBaseUrl + '/secret', {
-                firstName: 'Fred',
-                lastName: 'Flintstone'
+            axios({
+                method: 'post',
+                url: secretForm.serverApiBaseUrl + '/secret',
+                data: {
+                    secret: this.secret,
+                    expireAfterViews: this.expireAfterViews,
+                    expireAfter: this.expireAfter,
+                },
+                headers: { "Content-Type": "application/x-www-form-urlencoded", "accept": "application/json" } // TODO: DO NOT work!!
             })
                 .then(function (response) {
                     console.log(response);
