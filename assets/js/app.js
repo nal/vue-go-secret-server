@@ -25,21 +25,34 @@ const app = new Vue({
         },
         sendRequest: function () {
             const secretForm = this;
-            axios({
-                method: 'post',
-                url: secretForm.serverApiBaseUrl + '/secret',
-                data: {
+            data = Qs.stringify(
+                {
                     secret: this.secret,
                     expireAfterViews: this.expireAfterViews,
                     expireAfter: this.expireAfter,
-                },
-                headers: { "Content-Type": "application/x-www-form-urlencoded", "accept": "application/json" } // TODO: DO NOT work!!
-            })
+                }
+            );
+
+            axios.post(secretForm.serverApiBaseUrl + '/secret',
+                data,
+                {
+                    headers: { "Content-Type": "application/x-www-form-urlencoded", "accept": "application/json" }
+                }
+            )
                 .then(function (response) {
                     console.log(response);
                 })
                 .catch(function (error) {
-                    secretForm.requestFailed = "Error: " + error.message + ". Try again!";
+
+                    if (error.response) {
+                        secretForm.requestFailed = "Error: " + error.response.data.error_message + ". Try again!";
+                        // console.log(error.response.data);
+                        // console.log(error.response.status);
+                        // console.log(error.response.headers);
+                    } else {
+                        // console.log('Error', error.message);
+                    }
+
                 });
         }
     }
