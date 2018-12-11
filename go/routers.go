@@ -16,32 +16,32 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Route struct to populate routes
-type Route struct {
+// muxRoute struct to populate routes
+type muxRoute struct {
 	Name        string
 	Method      string
 	Pattern     string
 	HandlerFunc http.HandlerFunc
 }
 
-type Routes []Route
+type muxRoutes []muxRoute
 
-var routes = Routes{
-	Route{
+var routes = muxRoutes{
+	muxRoute{
 		"Index",
 		"GET",
 		"/",
 		Index,
 	},
 
-	Route{
+	muxRoute{
 		"AddSecret",
 		strings.ToUpper("Post"),
 		"/v1/secret",
 		AddSecret,
 	},
 
-	Route{
+	muxRoute{
 		"GetSecretByHash",
 		strings.ToUpper("Get"),
 		"/v1/secret/{hash}",
@@ -49,6 +49,7 @@ var routes = Routes{
 	},
 }
 
+// NewRouter populates mandatory routes and provides less copy-pasting.
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range routes {
