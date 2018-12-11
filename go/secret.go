@@ -13,7 +13,8 @@ import (
 	"time"
 )
 
-type Secret struct {
+// secretStruct declares structure to render in function AddSecret
+type secretStruct struct {
 
 	// Unique hash to identify the secrets
 	Hash string `json:"hash,omitempty"`
