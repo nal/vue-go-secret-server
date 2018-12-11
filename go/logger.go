@@ -15,6 +15,7 @@ import (
 	"time"
 )
 
+// Logger logs requests to routes to simplify debugging
 func Logger(inner http.Handler, name string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
