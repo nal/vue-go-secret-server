@@ -7,6 +7,7 @@ const app = new Vue({
         expireAfter: null,
         serverApiBaseUrl: 'http://127.0.0.1:8088/v1',
         requestFailed: null,
+        requestSuccessful: { '_populated': 0 },
     },
     methods: {
         checkForm: function (e) {
@@ -40,10 +41,11 @@ const app = new Vue({
                 }
             )
                 .then(function (response) {
-                    console.log(response);
+                    // console.log(response.data);
+                    secretForm.requestSuccessful = response.data;
+                    secretForm.requestSuccessful['_populated'] = 1;
                 })
                 .catch(function (error) {
-
                     if (error.response) {
                         secretForm.requestFailed = "Error: " + error.response.data.error_message + ". Try again!";
                         // console.log(error.response.data);
@@ -52,7 +54,6 @@ const app = new Vue({
                     } else {
                         // console.log('Error', error.message);
                     }
-
                 });
         }
     }

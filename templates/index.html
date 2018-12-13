@@ -18,6 +18,25 @@
             <div class="col">
                 <h1>Welcome to Secret server!</h1>
                 <form id="post-secret" @submit="checkForm" class="border border-secondary rounded p-3">
+                    <!-- Successful response from server -->
+                    <template v-if="requestSuccessful['_populated']">
+                        <p>
+                            <b>Congratulations! You stored your secret in a safe place.</b>
+                            <div>
+                                <div>
+                                    <b>Your secret key:</b> {{ requestSuccessful.hash }}
+                                </div>
+                                <div>
+                                    <b>Your secret expies at:</b> {{ requestSuccessful.expiresAt }}
+                                </div>
+                                <div>
+                                    <b>Remaining views:</b> {{ requestSuccessful.remainingViews }}
+                                </div>
+                            </div>
+                        </p>
+                    </template>
+                    <!-- /Successful response from server -->
+
                     <!-- Form errors block -->
                     <p v-if="errors.length">
                         <b>Please correct the following error(s):</b>

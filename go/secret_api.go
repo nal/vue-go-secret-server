@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -89,11 +90,15 @@ func addSecretStore(hash string, secret string, expireAfterViews int32, expireAf
 	}
 	defer redisConn.Close()
 
+	counterViews := strings.Join([]string{hash, "counter"}, "-")
 	redisConn.Send("MULTI")
 	// Let website user overwrite settings with each subsequent request
 	redisConn.Send("DEL", hash)
+	redisConn.Send("DEL", counterViews)
 	redisConn.Send("SET", hash, secret)
 	redisConn.Send("EXPIRE", hash, expireAfter*60)
+	redisConn.Send("SET", counterViews, expireAfterViews)
+	redisConn.Send("EXPIRE", counterViews, expireAfter*60)
 	if _, err := redisConn.Do("EXEC"); err != nil {
 		return err
 	}
