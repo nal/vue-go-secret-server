@@ -17,6 +17,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 // Index serves index page
@@ -70,7 +72,7 @@ func AddSecret(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	secretData := &secretStruct{
+	secretData := &addSecretStruct{
 		Hash:           hash,
 		SecretText:     secret,
 		CreatedAt:      timeNow,
@@ -109,5 +111,57 @@ func addSecretStore(hash string, secret string, expireAfterViews int32, expireAf
 // in JSON format. If secret not found then it returns error message.
 func GetSecretByHash(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	vars := mux.Vars(r)
+
+	// Collect and validate required data
+	// hash
+	hash, err := validateHash(vars["hash"])
+	if err != nil {
+		renderValidationError(w, fmt.Sprint(err))
+		return
+	}
+
+	result, err := getSecretStore(hash)
+	if err != nil {
+		renderInternalError(w, fmt.Sprintf("Failed to get secret: %s", err))
+		return
+	}
+
+	// Secret not found
+	if result == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	secretData := &getSecretStruct{
+		SecretText: fmt.Sprintf("%s", result),
+	}
+	secretDataJSON, _ := json.Marshal(secretData)
 	w.WriteHeader(http.StatusOK)
+	w.Write(secretDataJSON)
+}
+
+// getSecretStore retrieves secret from Redis DB. Returns error if failed to get data from Redis DB.
+func getSecretStore(hash string) (interface{}, error) {
+	redisConn, err := Redis()
+	if err != nil {
+		return nil, err
+	}
+	defer redisConn.Close()
+
+	counterViews := strings.Join([]string{hash, "counter"}, "-")
+	redisConn.Send("DECR", counterViews)
+	redisConn.Send("GET", hash)
+	redisConn.Flush()
+
+	// Skip DECR command result
+	redisConn.Receive()
+
+	// Get GET command result
+	result, err := redisConn.Receive()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

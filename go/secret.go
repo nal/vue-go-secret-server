@@ -13,8 +13,8 @@ import (
 	"time"
 )
 
-// secretStruct declares structure to render in function AddSecret
-type secretStruct struct {
+// addSecretStruct declares structure to render in function AddSecret
+type addSecretStruct struct {
 
 	// Unique hash to identify the secrets
 	Hash string `json:"hash,omitempty"`
@@ -30,4 +30,10 @@ type secretStruct struct {
 
 	// How many times the secret can be viewed
 	RemainingViews int32 `json:"remainingViews,omitempty"`
+}
+
+// getSecretStruct declares structure to render in function GetSecretByHash
+type getSecretStruct struct {
+	// The secret itself
+	SecretText string `json:"secretText,omitempty"`
 }
