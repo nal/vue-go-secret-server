@@ -37,7 +37,10 @@
                             <b>Congratulations! You stored your secret in a safe place.</b>
                             <div>
                                 <div>
-                                    <b>Your secret key:</b> {{ requestSuccessful.hash }}
+                                    <b>Your secret key:</b>
+                                </div>
+                                <div>
+                                    <textarea class="w-100">{{ requestSuccessful.hash }}</textarea>
                                 </div>
                                 <div>
                                     <b>Your secret expies at:</b> {{ requestSuccessful.expiresAt }}
