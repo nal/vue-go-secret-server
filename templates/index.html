@@ -33,7 +33,7 @@
                     <h2>Store your secret:</h2>
                     <!-- Successful response from server -->
                     <template v-if="requestSuccessful['_populated']">
-                        <p>
+                        <div class="alert alert-info" role="alert">
                             <b>Congratulations! You stored your secret in a safe place.</b>
                             <div>
                                 <div>
@@ -49,9 +49,8 @@
                                     <b>Remaining views:</b> {{ requestSuccessful.remainingViews }}
                                 </div>
                             </div>
-                        </p>
-                    </template>
-                    <!-- /Successful response from server -->
+                        </div>
+                    </template> <!-- /Successful response from server -->
 
                     <!-- Form errors block -->
                     <p v-if="errors.length">
@@ -100,12 +99,10 @@
                     <h2>Get your secret:</h2>
                     <!-- Successful response from server -->
                     <template v-if="requestSuccessful['_populated']">
-                        <p>
-                            <div>
-                                <b>Your secret:</b>
-                                <div class="alert alert-secondary" role="alert">{{ requestSuccessful.secretText }}</div>
-                            </div>
-                        </p>
+                        <div class="alert alert-info" role="alert">
+                            <b>Your secret:</b>
+                            <strong>{{ requestSuccessful.secretText }}</strong>
+                        </div>
                     </template>
                     <!-- /Successful response from server -->
 
