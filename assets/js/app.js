@@ -1,5 +1,5 @@
-const app = new Vue({
-    el: '#post-secret',
+const addSecret = new Vue({
+    el: '#addSecret',
     data: {
         errors: [],
         secret: null,
@@ -51,6 +51,51 @@ const app = new Vue({
                         // console.log(error.response.data);
                         // console.log(error.response.status);
                         // console.log(error.response.headers);
+                    } else {
+                        // console.log('Error', error.message);
+                    }
+                });
+        }
+    }
+})
+
+const getSecret = new Vue({
+    el: '#getSecret',
+    data: {
+        hash: null,
+        serverApiBaseUrl: 'http://127.0.0.1:8088/v1',
+        requestFailed: null,
+        requestSuccessful: { '_populated': 0 },
+    },
+    methods: {
+        sendRequest: function (e) {
+            e.preventDefault();
+            const getSecretForm = this;
+
+            // Clear previous result if any
+            getSecretForm.requestSuccessful['_populated'] = 0;
+            getSecretForm.requestFailed = null;
+
+            axios.get(getSecretForm.serverApiBaseUrl + '/secret/' + getSecretForm.hash,
+                {
+                    headers: { "Content-Type": "application/x-www-form-urlencoded", "accept": "application/json" }
+                }
+            )
+                .then(function (response) {
+                    getSecretForm.requestSuccessful = response.data;
+                    getSecretForm.requestSuccessful['_populated'] = 1;
+                })
+                .catch(function (error) {
+
+                    if (error.response) {
+                        if (error.response.status == 404) {
+                            // hash not found or expired
+                            getSecretForm.requestFailed = "Secret with provided hash not found or already expired!"
+
+                        }
+                        else {
+                            getSecretForm.requestFailed = "Error: " + error.response.data.error_message + ". Try again!";
+                        }
                     } else {
                         // console.log('Error', error.message);
                     }

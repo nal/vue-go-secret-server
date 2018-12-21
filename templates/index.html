@@ -17,7 +17,8 @@
         <div class="row mt-5">
             <div class="col">
                 <h1>Welcome to Secret server!</h1>
-                <form id="post-secret" @submit="checkForm" class="border border-secondary rounded p-3">
+                <h2>Store your secret:</h2>
+                <form id="addSecret" @submit="checkForm" class="border border-secondary rounded p-3">
                     <!-- Successful response from server -->
                     <template v-if="requestSuccessful['_populated']">
                         <p>
@@ -70,10 +71,41 @@
                         <input type="number" min=0 step=1 class="form-control" id="expireAfter" v-model="expireAfter"
                             aria-describedby="expireAfterHelp" placeholder="Enter expireAfter" required>
                         <small id="expireAfterHelp" class="form-text text-muted">The secret won’t be available
-                            after
-                            the
-                            given
-                            time. The value is provided in minutes. 0 means never expires</small>
+                            after the given time. The value is provided in minutes. 0 means never expires</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="post-secret-submit">Submit</button>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <h2>Get your secret:</h2>
+                <form id="getSecret" @submit="sendRequest" class="border border-secondary rounded p-3">
+                    <!-- Successful response from server -->
+                    <template v-if="requestSuccessful['_populated']">
+                        <p>
+                            <div>
+                                <b>Your secret:</b>
+                                <div class="alert alert-secondary" role="alert">{{ requestSuccessful.secretText }}</div>
+                            </div>
+                        </p>
+                    </template>
+                    <!-- /Successful response from server -->
+
+                    <!-- Request failed block -->
+                    <template v-if="requestFailed">
+                        <div class="alert alert-danger" role="alert">{{ requestFailed }}</div>
+                    </template>
+                    <!-- /Request failed block -->
+
+                    <div class="form-group">
+                        <label for="hash">Enter hash</label>
+                        <input type="text" class="form-control" id="hash" v-model="hash" aria-describedby="getSecretHelp"
+                            placeholder="Enter hash" required>
+                        <small id="getSecretHelp" class="form-text text-muted">This hash was generated when you stored
+                            your secret</small>
                     </div>
                     <button type="submit" class="btn btn-primary" id="post-secret-submit">Submit</button>
                 </form>

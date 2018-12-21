@@ -151,17 +151,44 @@ func getSecretStore(hash string) (interface{}, error) {
 	defer redisConn.Close()
 
 	counterViews := strings.Join([]string{hash, "counter"}, "-")
-	redisConn.Send("DECR", counterViews)
 	redisConn.Send("GET", hash)
 	redisConn.Flush()
 
-	// Skip DECR command result
-	redisConn.Receive()
-
 	// Get GET command result
-	result, err := redisConn.Receive()
+	resultSecret, err := redisConn.Receive()
 	if err != nil {
 		return nil, err
 	}
-	return result, nil
+	// Secret not found
+	if resultSecret == nil {
+		return nil, nil
+	}
+
+	redisConn.Send("DECR", counterViews)
+	redisConn.Flush()
+	// Get DECR command result.
+	resultDecr, err := redisConn.Receive()
+	if err != nil {
+		return nil, err
+	}
+
+	// If counter equals to zero, then we reached view limit.
+	// In this case delete keys from Redis and return secret.
+	if resultDecr.(int64) == 0 {
+		redisConn.Send("DEL", counterViews, hash)
+		redisConn.Flush()
+
+		resultDel, err := redisConn.Receive()
+		if err != nil {
+			return nil, err
+		}
+
+		// We deleted 2 keys. Check the result.
+		if resultDel.(int64) != 2 {
+			return nil, fmt.Errorf("Internal error! Code: 1")
+		}
+	}
+
+	// All OK, return secret
+	return resultSecret, nil
 }
