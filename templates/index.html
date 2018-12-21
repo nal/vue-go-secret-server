@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <title>Vue JS and Golang secret server</title>
 
@@ -10,15 +12,25 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+    <style>
+        @media only screen and (max-width: 576px) {
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row mt-5">
-            <div class="col">
-                <h1>Welcome to Secret server!</h1>
-                <h2>Store your secret:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <h1 class="font-size-1rem">Welcome to Secret server!</h1>
                 <form id="addSecret" @submit="checkForm" class="border border-secondary rounded p-3">
+                    <h2>Store your secret:</h2>
                     <!-- Successful response from server -->
                     <template v-if="requestSuccessful['_populated']">
                         <p>
@@ -76,13 +88,13 @@
                     <button type="submit" class="btn btn-primary" id="post-secret-submit">Submit</button>
                 </form>
             </div>
-            <div class="col"></div>
+            <div class="col-12 col-lg-4"></div>
         </div>
 
-        <div class="row mt-5">
-            <div class="col">
-                <h2>Get your secret:</h2>
+        <div class="row mt-3">
+            <div class="col-12 col-lg-8">
                 <form id="getSecret" @submit="sendRequest" class="border border-secondary rounded p-3">
+                    <h2>Get your secret:</h2>
                     <!-- Successful response from server -->
                     <template v-if="requestSuccessful['_populated']">
                         <p>
@@ -110,7 +122,7 @@
                     <button type="submit" class="btn btn-primary" id="post-secret-submit">Submit</button>
                 </form>
             </div>
-            <div class="col"></div>
+            <div class="col-12 col-lg-4"></div>
         </div>
     </div>
     <script src="/assets/js/qs.js"></script>
